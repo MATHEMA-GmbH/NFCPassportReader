@@ -42,6 +42,7 @@ public class PassportReader : NSObject {
     // By default, Passive Authentication uses the new RFS5652 method to verify the SOD, but can be switched to use
     // the previous OpenSSL CMS verification if necessary
     public var passiveAuthenticationUsesOpenSSL : Bool = false
+    public var openRetryOptions : Bool = false
 
     public init( logLevel: LogLevel = .info, masterListURL: URL? = nil ) {
         super.init()
@@ -370,6 +371,7 @@ extension PassportReader {
                     if self.caHandler != nil {
                         self.caHandler = nil
                         redoBAC = true
+                        openRetryOptions = true
                     } else {
                         // Can't go any more!
                         throw error
