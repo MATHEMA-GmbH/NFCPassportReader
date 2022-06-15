@@ -40,6 +40,7 @@ public class PassportReader : NSObject {
     // By default, Passive Authentication uses the new RFS5652 method to verify the SOD, but can be switched to use
     // the previous OpenSSL CMS verification if necessary
     public var passiveAuthenticationUsesOpenSSL : Bool = false
+    public var openRetryOptions : Bool = false
 
     public init( logLevel: LogLevel = .info, masterListURL: URL? = nil ) {
         super.init()
@@ -60,8 +61,8 @@ public class PassportReader : NSObject {
         dataAmountToReadOverride = amount
     }
         
-    public func readPassport( mrzKey : String, tags: [DataGroupId] = [], skipSecureElements :Bool = true, skipCA : Bool = false, skipPACE: Bool = false, customDisplayMessage: ((NFCViewDisplayMessage) -> String?)? = nil, completed: @escaping (NFCPassportModel?, NFCPassportReaderError?)->()) {
-        self.passport = NFCPassportModel()
+    public func readPassport(nfcPassportModel: NFCPassportModel?, mrzKey : String, tags: [DataGroupId] = [], skipSecureElements :Bool = true, skipCA : Bool = false, skipPACE: Bool = false, customDisplayMessage: ((NFCViewDisplayMessage) -> String?)? = nil, completed: @escaping (NFCPassportModel?, NFCPassportReaderError?)->()) {
+        self.passport = nfcPassportModel ?? NFCPassportModel()
         self.mrzKey = mrzKey
         self.skipCA = skipCA
         self.skipPACE = skipPACE
@@ -474,6 +475,7 @@ extension PassportReader {
                     if self.caHandler != nil {
                         self.caHandler = nil
                         completed(nil)
+                        openRetryOptions = true
                     } else {
                         // Can't go any more!
                         self.dataGroupsToRead.removeAll()
