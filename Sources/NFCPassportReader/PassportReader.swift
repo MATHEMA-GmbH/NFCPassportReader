@@ -41,6 +41,7 @@ public class PassportReader : NSObject {
     // the previous OpenSSL CMS verification if necessary
     public var passiveAuthenticationUsesOpenSSL : Bool = false
     public var openRetryOptions : Bool = false
+    public var dataGroupsToRetry : [DataGroupId] = []
 
     public init( logLevel: LogLevel = .info, masterListURL: URL? = nil ) {
         super.init()
@@ -473,6 +474,7 @@ extension PassportReader {
                 if errMsg == "Session invalidated" || errMsg == "Class not supported" || errMsg == "Tag connection lost"  {
                     // Check if we have done Chip Authentication, if so, set it to nil and try to redo BAC
                     if self.caHandler != nil {
+                        dataGroupsToRetry = dataGroupsToRead
                         self.caHandler = nil
                         completed(nil)
                         openRetryOptions = true
