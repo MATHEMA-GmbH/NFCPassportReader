@@ -474,8 +474,8 @@ extension PassportReader {
                 if errMsg == "Session invalidated" || errMsg == "Class not supported" || errMsg == "Tag connection lost"  {
                     // Check if we have done Chip Authentication, if so, set it to nil and try to redo BAC
                     if self.caHandler != nil {
-                        if let currentlyReadingDG = currentlyReadingDataGroup {
-                            dataGroupsToRetry.append(currentlyReadingDG)
+                        dataGroupsToRead.forEach { dg in
+                            dataGroupsToRetry.append(dg)
                         }
                         self.caHandler = nil
                         completed(nil)
